@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Building } from 'lucide-react';
 import { TabView } from './components/TabView';
 import { ResourceCard } from './components/ResourceCard';

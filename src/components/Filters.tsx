@@ -1,4 +1,3 @@
-import React from 'react';
 import { SearchBar } from './SearchBar';
 import { CapacityFilter } from './CapacityFilter';
 import { FloorFilter } from './FloorFilter';

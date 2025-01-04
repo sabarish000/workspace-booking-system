@@ -1,4 +1,3 @@
-import React from 'react';
 import { Users } from 'lucide-react';
 
 interface CapacityFilterProps {
@@ -23,6 +22,7 @@ export function CapacityFilter({ capacity, onCapacityChange }: CapacityFilterPro
         <option value={4}>4+</option>
         <option value={6}>6+</option>
         <option value={8}>8+</option>
+        <option value={10}>10+</option>
       </select>
     </div>
   );

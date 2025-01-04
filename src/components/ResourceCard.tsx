@@ -1,4 +1,3 @@
-import React from 'react';
 import { Monitor, Users, ArrowUpDown } from 'lucide-react';
 import type { Room, Desk } from '../types';
 
