@@ -1,34 +1,74 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Building } from 'lucide-react';
-import { TabView } from './components/TabView';
+import { Tabs, TabView } from './components/TabView';
 import { ResourceCard } from './components/ResourceCard';
-import { desks, rooms } from './mock-data';
 import { Filters } from './components/Filters';
+import { Desk, ResourceType, Room } from './types';
+import { bookingService } from './api/bookingService';
 
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'rooms' | 'desks'>('rooms');
+  const [activeTab, setActiveTab] = useState<Tabs>(Tabs.Rooms);
   const [searchQuery, setSearchQuery] = useState('');
   const [minCapacity, setMinCapacity] = useState(0);
   const [searchFloor, setSearchFloor] = useState(0);
+  const [resources, setResources] = useState<(Room | Desk)[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchResources() {
+      setLoading(true);
+      try {
+        const data = await (activeTab === Tabs.Rooms
+          ? bookingService.getRooms()
+          : bookingService.getDesks());
+        setResources(data);
+      } catch (error) {
+        console.error('Failed to fetch resources:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchResources();
+  }, [activeTab]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query.toLowerCase());
   };
 
-  const handleBook = (id: string) => {
-    // TODO: Implement booking logic
+  const handleBook = async (id: string) => {
     console.log(`Booking resource with id: ${id}`);
+    try {
+      // resources.find(resource => resource.id === id)!.isBooked = true;
+      await bookingService.createBooking({
+        resourceId: id,
+        resourceType: activeTab === Tabs.Rooms ? ResourceType.Room : ResourceType.Desk,
+        userId: 'user1', // In a real app, this would come from auth
+        startTime: new Date(),
+        endTime: new Date(Date.now() + 3600000), // 1 hour from now
+      });
+      // Refresh resources after booking
+      const updatedResources = await (activeTab === Tabs.Rooms
+        ? bookingService.getRooms()
+        : bookingService.getDesks());
+      setResources(updatedResources);
+    } catch (error) {
+      // resources.find(resource => resource.id === id)!.isBooked = false;
+      console.error('Failed to create booking:', error);
+    }
   };
 
-  const filteredResources = activeTab === 'rooms'
-    ? rooms.filter(room => 
+  const filteredResources = activeTab === Tabs.Rooms
+    ? resources.filter(room => 
+        'capacity' in room  && // Check if room is a Room
         (room.name.toLowerCase().includes(searchQuery) ||
          room.floor.toString().includes(searchQuery)) &&
-        room.capacity >= minCapacity &&
-        (!searchFloor || room.floor == searchFloor)
+         (!searchFloor || room.floor == searchFloor) &&
+        room.capacity >= minCapacity
       )
-    : desks.filter(desk =>
+    : resources.filter(desk =>
+        'number' in desk && // check if desk is a Desk
         (desk.number.toLowerCase().includes(searchQuery) ||
         desk.floor.toString().includes(searchQuery)) &&
         (!searchFloor || desk.floor == searchFloor)
@@ -58,8 +98,9 @@ function App() {
             onFloorChange={setSearchFloor}
             activeTab={activeTab}
           />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          { loading ?
+          (<div className="text-center py-8 text-gray-500">Loading...</div>) : 
+          (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredResources.map((resource) => (
               <ResourceCard
                 key={resource.id}
@@ -68,7 +109,7 @@ function App() {
                 onBook={() => handleBook(resource.id)}
               />
             ))}
-          </div>
+          </div>)}
         </div>
       </main>
     </div>

@@ -16,10 +16,15 @@ export interface Desk {
   isBooked: boolean;
 }
 
+export enum ResourceType {
+  Room,
+  Desk
+}
+
 export interface Booking {
   id: string;
   resourceId: string;
-  resourceType: 'room' | 'desk';
+  resourceType: ResourceType;
   userId: string;
   startTime: Date;
   endTime: Date;

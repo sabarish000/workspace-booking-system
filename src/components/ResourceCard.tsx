@@ -1,14 +1,15 @@
 import { Monitor, Users, ArrowUpDown } from 'lucide-react';
 import type { Room, Desk } from '../types';
+import { Tabs } from './TabView';
 
 interface ResourceCardProps {
   resource: Room | Desk;
-  type: 'rooms' | 'desks';
+  type: Tabs;
   onBook: () => void;
 }
 
 export function ResourceCard({ resource, type, onBook }: ResourceCardProps) {
-  const isRoom = type === 'rooms';
+  const isRoom = type === Tabs.Rooms;
   const room = resource as Room;
   const desk = resource as Desk;
 
