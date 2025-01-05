@@ -1,6 +1,7 @@
 import { SearchBar } from './SearchBar';
 import { CapacityFilter } from './CapacityFilter';
 import { FloorFilter } from './FloorFilter';
+import { Tabs } from './TabView';
 
 interface FiltersProps {
   searchQuery: string;
@@ -9,7 +10,7 @@ interface FiltersProps {
   onCapacityChange: (capacity: number) => void;
   floor: number;
   onFloorChange: (floor: number) => void;
-  activeTab: 'rooms' | 'desks';
+  activeTab: Tabs;
 }
 
 export function Filters({ searchQuery, onSearch, capacity, onCapacityChange, floor, onFloorChange, activeTab }: FiltersProps) {
@@ -18,7 +19,7 @@ export function Filters({ searchQuery, onSearch, capacity, onCapacityChange, flo
       <SearchBar
         value={searchQuery}
         onSearch={onSearch}
-        placeholder={`Search ${activeTab === 'rooms' ? 'meeting rooms' : 'desk spaces'}...`}
+        placeholder={`Search ${activeTab === Tabs.Rooms ? 'meeting rooms' : 'desk spaces'}...`}
       />
       <div className="flex flex-row items-center justify-between">
         {(
@@ -27,7 +28,7 @@ export function Filters({ searchQuery, onSearch, capacity, onCapacityChange, flo
                 onFloorChange={onFloorChange}
             />
         )}
-        {activeTab === 'rooms' && (
+        {activeTab === Tabs.Rooms && (
             <CapacityFilter
             capacity={capacity}
             onCapacityChange={onCapacityChange}

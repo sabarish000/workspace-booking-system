@@ -1,8 +1,11 @@
-import React from 'react';
+export enum Tabs {
+  Rooms,
+  Desks
+}
 
 interface TabViewProps {
-  activeTab: 'rooms' | 'desks';
-  onTabChange: (tab: 'rooms' | 'desks') => void;
+  activeTab: Tabs;
+  onTabChange: (tab: Tabs) => void;
 }
 
 export function TabView({ activeTab, onTabChange }: TabViewProps) {
@@ -10,21 +13,21 @@ export function TabView({ activeTab, onTabChange }: TabViewProps) {
     <div className="flex space-x-1 rounded-xl bg-gray-200 p-1">
       <button
         className={`flex-1 py-2 px-4 rounded-lg transition-colors ${
-          activeTab === 'rooms'
+          activeTab === Tabs.Rooms
             ? 'bg-white text-blue-600 shadow'
             : 'text-gray-600 hover:bg-gray-300'
         }`}
-        onClick={() => onTabChange('rooms')}
+        onClick={() => onTabChange(Tabs.Rooms)}
       >
         Meeting Rooms
       </button>
       <button
         className={`flex-1 py-2 px-4 rounded-lg transition-colors ${
-          activeTab === 'desks'
+          activeTab === Tabs.Desks
             ? 'bg-white text-blue-600 shadow'
             : 'text-gray-600 hover:bg-gray-300'
         }`}
-        onClick={() => onTabChange('desks')}
+        onClick={() => onTabChange(Tabs.Desks)}
       >
         Desk Spaces
       </button>
