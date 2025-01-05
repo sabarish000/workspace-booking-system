@@ -12,6 +12,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [minCapacity, setMinCapacity] = useState(0);
   const [searchFloor, setSearchFloor] = useState(0);
+  const [showAvailableOnly, setShowAvailableOnly] = useState(false);
   const [resources, setResources] = useState<(Room | Desk)[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -60,18 +61,20 @@ function App() {
   };
 
   const filteredResources = activeTab === Tabs.Rooms
-    ? resources.filter(room => 
-        'capacity' in room  && // Check if room is a Room
-        (room.name.toLowerCase().includes(searchQuery) ||
-         room.floor.toString().includes(searchQuery)) &&
-         (!searchFloor || room.floor == searchFloor) &&
-        room.capacity >= minCapacity
+    ? resources.filter(resource => 
+        (!showAvailableOnly || !resource.isBooked) &&
+        'capacity' in resource  && // Check if room is a Room
+        (resource.name.toLowerCase().includes(searchQuery) ||
+         resource.floor.toString().includes(searchQuery)) &&
+         (!searchFloor || resource.floor == searchFloor) &&
+        resource.capacity >= minCapacity
       )
     : resources.filter(desk =>
         'number' in desk && // check if desk is a Desk
         (desk.number.toLowerCase().includes(searchQuery) ||
         desk.floor.toString().includes(searchQuery)) &&
-        (!searchFloor || desk.floor == searchFloor)
+        (!searchFloor || desk.floor == searchFloor) &&
+        (!showAvailableOnly || !desk.isBooked)
       );
 
   return (
@@ -96,6 +99,8 @@ function App() {
             onCapacityChange={setMinCapacity}
             floor={searchFloor}
             onFloorChange={setSearchFloor}
+            showAvailableOnly={showAvailableOnly}
+            onAvailabilityFilterChange={setShowAvailableOnly}
             activeTab={activeTab}
           />
           { loading ?

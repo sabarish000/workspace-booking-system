@@ -2,6 +2,7 @@ import { SearchBar } from './SearchBar';
 import { CapacityFilter } from './CapacityFilter';
 import { FloorFilter } from './FloorFilter';
 import { Tabs } from './TabView';
+import { AvailabilityFilter } from './AvailabilityFilter';
 
 interface FiltersProps {
   searchQuery: string;
@@ -11,9 +12,12 @@ interface FiltersProps {
   floor: number;
   onFloorChange: (floor: number) => void;
   activeTab: Tabs;
+  showAvailableOnly: boolean;
+  onAvailabilityFilterChange: (showAvailableOnly: boolean)  => void;
 }
 
-export function Filters({ searchQuery, onSearch, capacity, onCapacityChange, floor, onFloorChange, activeTab }: FiltersProps) {
+export function Filters({ searchQuery, onSearch, capacity, onCapacityChange, floor, onFloorChange,
+  showAvailableOnly, onAvailabilityFilterChange: onAvailabilityFilterChange, activeTab }: FiltersProps) {
   return (
     <div className="space-y-4">
       <SearchBar
@@ -34,6 +38,10 @@ export function Filters({ searchQuery, onSearch, capacity, onCapacityChange, flo
             onCapacityChange={onCapacityChange}
             />
         )}
+        <AvailabilityFilter
+          showAvailableOnly={showAvailableOnly}
+          onAvailabilityFilterChange={onAvailabilityFilterChange}
+        />
       </div>
     </div>
   );
